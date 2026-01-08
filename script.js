@@ -1056,26 +1056,10 @@ class App {
 
             <div class="pop-dashboard-grid">
                 
-                <!-- 1. LEFT TOP: Project List -->
-                <div class="dash-card" style="grid-column: 1; grid-row: 1;">
-                    <div class="dash-card-header">
-                        <span>参加プロジェクト</span>
-                    </div>
-                    <div class="proj-grid">
-                        ${myProjects.map(p => `
-                            <div class="proj-card" onclick="window.app.enterProject('${p.id}')">
-                                <div class="proj-icon"><i class="ph ${p.icon || 'ph-folder'}"></i></div>
-                                <div>
-                                    <div style="font-weight:600; color:#1e293b; font-size:0.95rem;">${p.name}</div>
-                                    <div style="font-size:0.8rem; color:#64748b;">${p.members ? p.members.length : 0} メンバー</div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
+
 
                 <!-- 2. LEFT BOTTOM: My Issues -->
-                <div class="dash-card" style="grid-column: 1; grid-row: 2; overflow: hidden;">
+                <div class="dash-card" style="grid-column: 1; grid-row: 1 / span 2; overflow: hidden;">
                     <div class="dash-card-header">
                         <span>自分の課題</span>
                         <span style="font-size:0.85rem; color:#64748b; font-weight:400;">未完了: ${yourTasks.length}件</span>
