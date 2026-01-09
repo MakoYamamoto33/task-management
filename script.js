@@ -1,5 +1,5 @@
 // --- Store & Data Management ---
-const STORE_KEY = 'dx_backlog_v5';
+const STORE_KEY = 'dx_backlog_v6';
 
 const initialData = {
     currentUser: { id: 'admin', name: '管理者太郎', role: 'admin' },
@@ -18,24 +18,13 @@ const initialData = {
         departments: ['管理部', '開発部', '営業部', '情報システム部']
     },
     projects: [
-        { id: 'prj-1', name: '全社DX推進プロジェクト', dept: '管理部' },
-        { id: 'prj-2', name: '営業支援システム開発', dept: '開発部' }
+        { id: 'prj-1', name: 'テスト', dept: '管理部' }
     ],
     members: [
-        { id: 'admin', name: '管理者太郎', dept: '管理部', role: 'admin', password: 'admin' },
-        { id: 'user1', name: '山田 花子', dept: '開発部', role: 'user', password: 'password' },
-        { id: 'user2', name: '鈴木 一郎', dept: '営業部', role: 'user', password: 'password' },
-        { id: 'user3', name: '佐藤 次郎', dept: '情報システム部', role: 'user', password: 'password' }
+        { id: 'admin', name: '管理者太郎', dept: '管理部', role: 'admin', password: 'admin' }
     ],
-    issues: [
-        { id: 'PROJ-1', projectId: 'prj-1', title: 'デザインシステムの策定', desc: 'UIコンポーネントの基本設計を行う\n- [x] カラーパレット作成\n- [ ] タイポグラフィ定義', startDate: '2025-12-01', dueDate: '2025-12-10', assignee: 'user1', status: 'progress', priority: 'high', category: 'design', reactions: {} },
-        { id: 'PROJ-2', projectId: 'prj-2', title: 'API仕様書の作成', desc: 'Swaggerを用いて定義する', startDate: '2025-12-05', dueDate: '2025-12-15', assignee: 'user1', status: 'todo', priority: 'medium', category: 'dev', reactions: {} },
-        { id: 'PROJ-3', projectId: 'prj-1', title: '要件定義MTG', desc: 'クライアントとの初回MTG', startDate: '2025-11-20', dueDate: '2025-11-20', assignee: 'admin', status: 'done', priority: 'high', category: 'mtg', reactions: {} }
-    ],
-    wikis: [
-        { id: 'WIKI-1', title: 'プロジェクト概要', content: '本プロジェクトはDX推進を目的とした...' },
-        { id: 'WIKI-2', title: '開発環境のセットアップ', content: 'Node.jsのインストール手順...' }
-    ]
+    issues: [],
+    wikis: []
 };
 
 class Store {
@@ -476,7 +465,7 @@ class App {
                 .cool-project-card:hover { 
                     transform: translateY(-4px); 
                     box-shadow: 0 12px 16px -4px rgba(16, 24, 40, 0.08), 0 4px 6px -2px rgba(16, 24, 40, 0.03); 
-                    border-color: var(--primary); 
+                    border-color: #d0d5dd; 
                     z-index: 10;
                 }
                 .cool-project-card:hover .chevron-icon { color: var(--primary) !important; }
@@ -703,33 +692,8 @@ class App {
                 style.id = styleId;
                 style.innerHTML = `
                     /* Global Compact Typography */
-                    html { font-size: 13.5px; } 
+                    html { font-size: 13.5px; } /* Slightly smaller global scale */
                     body { font-weight: 400; color: #474a4d; font-size: 0.95rem; } 
-
-                    /* Animation Definitions */
-                    @keyframes fadeInSlide {
-                        from { opacity: 0; transform: translateY(10px); }
-                        to { opacity: 1; transform: translateY(0); }
-                    }
-
-                    /* Sidebar Animation */
-                    .sidebar {
-                        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                        /* Default width handled by CSS, only animating the change */
-                    }
-                    .sidebar:hover {
-                        width: 270px;
-                    }
-
-                    /* Create Project Button Animation */
-                    #header-create-prj-btn {
-                        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-                    }
-                    #header-create-prj-btn:hover {
-                        transform: scale(1.05);
-                        filter: brightness(1.1);
-                        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
-                    } 
                 `;
                 document.head.appendChild(style);
             }
@@ -944,11 +908,6 @@ class App {
                     display: flex;
                     flex-direction: column;
                     overflow: hidden;
-                    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-                .dash-card:hover {
-                    transform: translateY(-4px);
-                    box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
                 }
 
                 .dash-card-header {
@@ -1056,10 +1015,26 @@ class App {
 
             <div class="pop-dashboard-grid">
                 
-
+                <!-- 1. LEFT TOP: Project List -->
+                <div class="dash-card" style="grid-column: 1; grid-row: 1;">
+                    <div class="dash-card-header">
+                        <span>参加プロジェクト</span>
+                    </div>
+                    <div class="proj-grid">
+                        ${myProjects.map(p => `
+                            <div class="proj-card" onclick="window.app.enterProject('${p.id}')">
+                                <div class="proj-icon"><i class="ph ${p.icon || 'ph-folder'}"></i></div>
+                                <div>
+                                    <div style="font-weight:600; color:#1e293b; font-size:0.95rem;">${p.name}</div>
+                                    <div style="font-size:0.8rem; color:#64748b;">${p.members ? p.members.length : 0} メンバー</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
 
                 <!-- 2. LEFT BOTTOM: My Issues -->
-                <div class="dash-card" style="grid-column: 1; grid-row: 1 / span 2; overflow: hidden;">
+                <div class="dash-card" style="grid-column: 1; grid-row: 2; overflow: hidden;">
                     <div class="dash-card-header">
                         <span>自分の課題</span>
                         <span style="font-size:0.85rem; color:#64748b; font-weight:400;">未完了: ${yourTasks.length}件</span>
@@ -1097,8 +1072,8 @@ class App {
                         <button id="mark-read-btn" class="btn btn-sm btn-primary" style="display:none; font-size:0.8rem;" onclick="window.app.markSelectedNotificationsRead()">既読にする</button>
                     </div>
                     <div class="notif-feed">
-                         ${notifications.length > 0 ? notifications.map((n, index) => `
-                            <div class="notif-item" style="cursor:pointer; opacity:0; animation: fadeInSlide 0.4s ease-out forwards; animation-delay: ${index * 0.05}s;" onclick="store.markNotificationRead('${n.id}'); window.app.renderView('dashboard'); window.app.navigate('${n.link.page}', {id:'${n.link.id}'})">
+                         ${notifications.length > 0 ? notifications.map(n => `
+                            <div class="notif-item" style="cursor:pointer;" onclick="store.markNotificationRead('${n.id}'); window.app.renderView('dashboard'); window.app.navigate('${n.link.page}', {id:'${n.link.id}'})">
                                 <div style="display:flex; align-items:center; padding:0 0.5rem 0 0.2rem;" onclick="event.stopPropagation();">
                                     <input type="checkbox" class="notif-cb" value="${n.id}" onchange="window.app.toggleNotifCheck()" style="cursor:pointer; transform:scale(1.2);">
                                 </div>
