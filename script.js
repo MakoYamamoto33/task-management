@@ -285,7 +285,7 @@ class App {
                             </div>
                             <div style="position:relative;">
                                 <button id="btn-change-icon" class="btn btn-secondary" style="border-radius:20px; font-size:0.85rem; padding:0.4rem 1rem;" onclick="const el = document.getElementById('icon-picker-pop'); el.style.display = el.style.display === 'none' ? 'grid' : 'none';">
-                                    <i class="ph ph-camera"></i> アイコンを変更
+                                    アイコンを変更
                                 </button>
                                 <!-- Simple Emoji/Char Picker -->
                                 <div id="icon-picker-pop" style="display:none; position:absolute; top:110%; left:50%; transform:translateX(-50%); background:white; border:1px solid #e2e8f0; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); border-radius:12px; padding:0.5rem; grid-template-columns:repeat(4, 1fr); gap:0.5rem; width:180px; z-index:10;">
