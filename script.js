@@ -1,5 +1,5 @@
 // --- Store & Data Management ---
-const STORE_KEY = 'dx_backlog_v6';
+const STORE_KEY = 'dx_backlog_v7';
 
 const initialData = {
     currentUser: { id: 'admin', name: '管理者太郎', role: 'admin' },
